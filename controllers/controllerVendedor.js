@@ -22,7 +22,7 @@ module.exports = {
             req.session.perfil = 'vendedor';
             res.locals.login = vendedor.login;
 
-            return res.render('home');
+            return res.render('vendedor/home');
 
         } catch (err) {
             console.log(err);
