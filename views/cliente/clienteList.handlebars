@@ -1,0 +1,34 @@
+<h2>Lista de clientes</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Login</th>
+            <th scope="col">Senha</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">CPF</th>
+            <th scope="col">Endereço</th>
+            <th scope="col">Produto Preferido</th>
+            {{#if admin}}
+            <th scope="col">Editar</th>
+            <th scope="col">Deletar</th>
+            {{/if}}
+        </tr>
+    </thead>
+    <tbody>
+        {{#each clientes}}
+        <tr>
+            <th scope="row">{{login}}</th>
+            <td>{{senha}}</td>
+            <td>{{tipo}}</td>
+            <td>{{cpf}}</td>
+            <td>{{endereco}}</td>
+            <td>{{produto_preferido}}</td>
+            {{#if ../admin}}
+            <td><a href="clienteUpdate/{{id}}">Editar</a></td>
+            <td><a href="clienteDelete/{{id}}">Deletar</a></td>
+            {{/if}}
+        </tr>
+        {{/each}}
+    </tbody>
+</table>

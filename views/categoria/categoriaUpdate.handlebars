@@ -1,0 +1,16 @@
+<h2>Editar Categoria</h2>
+
+<!-- Formulário para atualizar uma categoria existente -->
+<form action="/categoriaUpdate" method="post">
+    <!-- Campo oculto que mantém o ID da categoria para identificar qual será atualizada -->
+    <input type="hidden" name="id" value={{categoria.id}}>
+    
+    <!-- Campo de texto para editar o nome da categoria, já preenchido com o valor atual -->
+    Nome: <input type="text" name="nome" value="{{categoria.nome}}">
+    <br> <br>
+    Descrição: <input type="text" name="descricao" value="{{categoria.descricao}}">
+    <br> <br>
+    
+    <!-- Botão para enviar o formulário e salvar as alterações -->
+    <input type="submit" value="Editar">
+</form>

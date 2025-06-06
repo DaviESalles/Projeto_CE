@@ -1,0 +1,35 @@
+<h2>Editar Produto</h2>
+
+<form action="/produtoUpdate" method="post">
+    <input type="hidden" name="id" value={{produto.id}}>
+    Nome: <input type="text" name="nome"  value="{{produto.nome}}">
+    <br> <br>
+    
+    Preço: <input type="number" name="preco"  value="{{produto.preco}}">
+    <br> <br>
+
+    Descrição: <input type="text" name="descricao" value="{{produto.descricao}}">
+    <br> <br>
+
+    Categoria:
+    <select name="categoriaId">
+        {{#each categorias}}
+        <tr>
+            <option value={{id}}>{{nome}}</option>
+        </tr>
+        {{/each}}
+    </select>
+    <br> <br>
+    
+    
+    Vendedor:
+    <select name="vendedorId">
+        {{#each vendedores}}
+        <tr>
+            <option value={{id}}>{{login}}</option>
+        </tr>
+        {{/each}}
+    </select>
+    <br> <br>
+    <input type="submit" value="Editar">
+</form>

@@ -1,0 +1,32 @@
+<h2>Lista de Vendedores</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Login</th>
+            <th scope="col">Senha</th>
+            <th scope="col">CPF</th>
+            <th scope="col">Endereço</th>
+            <th scope="col">Especialidade</th>
+            {{#if admin}}
+            <th scope="col">Editar</th>
+            <th scope="col">Deletar</th>
+            {{/if}}
+        </tr>
+    </thead>
+    <tbody>
+        {{#each vendedores}}
+        <tr>
+            <th scope="row">{{login}}</th>
+            <td>{{senha}}</td>
+            <td>{{cpf}}</td>
+            <td>{{endereco}}</td>
+            <td>{{especialidade}}</td>
+            {{#if ../admin}}
+            <td><a href="vendedorUpdate/{{id}}">Editar</a></td>
+            <td><a href="vendedorDelete/{{id}}">Deletar</a></td>
+            {{/if}}
+        </tr>
+        {{/each}}
+    </tbody>
+</table>

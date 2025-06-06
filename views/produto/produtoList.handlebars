@@ -1,0 +1,34 @@
+<h2>Lista de produtos</h2>
+
+<table border="1px">
+    <tr>
+        <td>Nome</td>
+        <td>Preço</td>
+        <td>Descrição</td>
+        <td>Categoria</td>
+        <td>Vendedor</td>
+        <td>Comprar</td>
+        {{#if admin}}
+        <td>Editar</td>
+        <td>Deletar</td>
+        {{/if}}
+    </tr>
+    {{#each produtos}}
+    <tr>
+        <td>{{nome}}</td>
+        <td>{{preco}}</td>
+        <td>{{descricao}}</td>
+        <td>{{categoriaId}}</td>
+        <td>{{vendedorId}}</td>
+        <td>
+            <form action="/carrinho/adicionar/{{id}}" method="POST">
+                <button type="submit">Adicionar ao Carrinho</button>
+            </form>
+        </td>
+        {{#if ../admin}}
+        <td><a href="produtoUpdate/{{id}}">Editar</a></td>
+        <td><a href="produtoDelete/{{id}}">Deletar</a></td>
+        {{/if}}
+    </tr>
+    {{/each}}
+</table>

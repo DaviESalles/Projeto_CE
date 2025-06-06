@@ -1,0 +1,27 @@
+<h2>Editar Pedido</h2>
+
+<form action="/pedidoUpdate" method="post">
+    <input type="hidden" name="id" value="{{pedido.id}}">
+
+    Cliente:
+    <select name="clienteId">
+        {{#each clientes}}
+        <option value="{{id}}" {{#if selected}}selected{{/if}}>{{login}}</option>
+        {{/each}}
+    </select>
+    <br><br>
+
+    Produto:
+    <select name="produtoId">
+        {{#each produtos}}
+        <option value="{{id}}" {{#if selected}}selected{{/if}}>{{nome}} - R$ {{preco}}</option>
+        {{/each}}
+    </select>
+    <br><br>
+
+    Quantidade:
+    <input type="number" name="quantidade" min="1" value="{{pedido.quantidade}}">
+    <br><br>
+
+    <input type="submit" value="Atualizar Pedido">
+</form>

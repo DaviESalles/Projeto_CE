@@ -1,0 +1,25 @@
+<h2>Criar Pedido</h2>
+
+<form action="/pedidoCreate" method="post">
+    Cliente:
+    <select name="clienteId">
+        {{#each clientes}}
+        <option value={{id}}>{{login}}</option>
+        {{/each}}
+    </select>
+    <br><br>
+
+    Produto:
+    <select name="produtoId">
+        {{#each produtos}}
+        <option value="{{id}}">{{nome}} - R$ {{preco}}</option>
+        {{/each}}
+    </select>
+    <br><br>
+
+    Quantidade:
+    <input type="number" name="quantidade" min="1" value="1">
+    <br><br>
+
+    <input type="submit" value="Fazer Pedido">
+</form>

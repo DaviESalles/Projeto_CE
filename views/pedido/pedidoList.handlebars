@@ -1,0 +1,27 @@
+<h2>Lista de Pedidos</h2>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Cliente</th>
+        <th>Produto</th>
+        <th>Quantidade</th>
+        <th>Valor Total</th>
+        <th>Ações</th>
+    </tr>
+    {{#each pedidos}}
+    <tr>
+        <td>{{id}}</td>
+        <td>{{cliente.login}}</td>
+        <td>{{produto.nome}}</td>
+        <td>{{quantidade}}</td>
+        <td>R$ {{valorTotal}}</td>
+        <td>
+            <a href="/pedidoUpdate/{{id}}">Editar</a> |
+            <a href="/pedidoDelete/{{id}}" onclick="return confirm('Confirmar exclusão?')">Excluir</a>
+        </td>
+    </tr>
+    {{/each}}
+</table>
+
+<br>

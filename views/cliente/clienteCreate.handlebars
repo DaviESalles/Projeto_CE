@@ -1,0 +1,48 @@
+<h2>Adicionar Cliente</h2>
+
+<form action="/clienteCreate" method="post">
+    <!-- Campo para inserir o login do cliente -->
+    Login: <input type="text" name="login">
+    <br> <br>
+
+    <!-- Campo para inserir a senha do cliente (oculta os caracteres digitados) -->
+    Senha: <input type="password" name="senha">
+    <br> <br>
+
+    Tipo: <input type="text" name="tipo">
+    <br> <br>
+
+
+    <!-- Campo para inserir o cpf do cliente -->
+    CPF: <input type="text" name="cpf" id="cpf">
+    <br> <br>
+
+    <!-- Campo para inserir o endereço do cliente -->
+    Endereço: <input type="text" name="endereco">
+    <br> <br>
+
+    <!-- Campo para inserir o produto preferido do cliente -->
+    Produto Preferido <input type="text" name="produto_preferido">
+    <br> <br>
+
+    <!-- Botão para enviar os dados do formulário para criar um novo cliente -->
+    <input type="submit" value="Cadastrar">
+</form>
+
+
+
+
+{{!-- máscara para o cpf funcionar corretamente --}}
+<script>
+    document.getElementById('cpf').addEventListener('input', function (e) {
+        let value = e.target.value.replace(/\D/g, ''); // remove tudo que não for número
+        value = value.slice(0, 11); // limita a 11 dígitos
+
+        // aplica a máscara: 000.000.000-00
+        if (value.length >= 3) value = value.replace(/^(\d{3})(\d)/, '$1.$2');
+        if (value.length >= 6) value = value.replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3');
+        if (value.length >= 9) value = value.replace(/^(\d{3})\.(\d{3})\.(\d{3})(\d)/, '$1.$2.$3-$4');
+
+        e.target.value = value;
+    });
+</script>
