@@ -7,11 +7,12 @@ const middlewares = require("./middlewares/middlewares");
 const routes = require("./routers/route");
 const carrinhoRoutes = require("./routers/carrinhoRoutes");
 
-// Configura o Handlebars com helper customizado
+// Configura o Handlebars com helpers customizados
 app.engine("handlebars", handlebars.engine({
   defaultLayout: "main",
   helpers: {
-    multiply: (a, b) => (a * b).toFixed(2)
+    multiply: (a, b) => (a * b).toFixed(2),
+    eq: (a, b) => a == b
   }
 }));
 app.set("view engine", "handlebars");

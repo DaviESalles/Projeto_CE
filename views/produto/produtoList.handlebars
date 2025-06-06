@@ -7,7 +7,9 @@
         <td>Descrição</td>
         <td>Categoria</td>
         <td>Vendedor</td>
+        {{#if perfilCliente}}
         <td>Comprar</td>
+        {{/if}}
         {{#if admin}}
         <td>Editar</td>
         <td>Deletar</td>
@@ -20,14 +22,18 @@
         <td>{{descricao}}</td>
         <td>{{categoriaId}}</td>
         <td>{{vendedorId}}</td>
+        
+        {{#if ../perfilCliente}}
         <td>
             <form action="/carrinho/adicionar/{{id}}" method="POST">
                 <button type="submit">Adicionar ao Carrinho</button>
             </form>
         </td>
+        {{/if}}
+
         {{#if ../admin}}
-        <td><a href="produtoUpdate/{{id}}">Editar</a></td>
-        <td><a href="produtoDelete/{{id}}">Deletar</a></td>
+        <td><a href="/produtoUpdate/{{id}}">Editar</a></td>
+        <td><a href="/produtoDelete/{{id}}">Deletar</a></td>
         {{/if}}
     </tr>
     {{/each}}

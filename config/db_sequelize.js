@@ -62,6 +62,13 @@ db.Produto.belongsToMany(db.Cliente, {
 db.Pedido.belongsTo(db.Cliente, { foreignKey: 'clienteId' });
 db.Pedido.belongsTo(db.Produto, { foreignKey: 'produtoId' });
 
+// Produto pertence a uma Categoria
+db.Produto.belongsTo(db.Categoria, { foreignKey: 'categoriaId' });
+
+// Produto pertence a um Vendedor
+db.Produto.belongsTo(db.Vendedor, { foreignKey: 'vendedorId' });
+
+
 db.Cliente.hasMany(db.Pedido, { foreignKey: 'clienteId' });
 db.Produto.hasMany(db.Pedido, { foreignKey: 'produtoId' });
 

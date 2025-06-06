@@ -63,20 +63,20 @@
                         </div>
                     </li>
                     {{/if}}
-
+{{#if admin}}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownCategorias" role="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Categorias
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownCategorias">
-                            {{#if admin}}
+                            
                                 <a class="dropdown-item" href="/categoriaCreate">Criar</a>
-                            {{/if}}
+                            
                             <a class="dropdown-item" href="/categoriaList">Listar</a>
                         </div>
                     </li>
-
+{{/if}}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownProdutos" role="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
