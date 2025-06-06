@@ -1,0 +1,16 @@
+<h1>Finalizar Compra</h1>
+
+<ul>
+  {{#each carrinho}}
+    <li>{{nome}} - {{quantidade}} x R$ {{preco}}</li>
+  {{/each}}
+</ul>
+
+<p><strong>Subtotal:</strong> R$ {{subtotal}}</p>
+<p><strong>Frete:</strong> {{#if frete}}R$ {{frete}}{{else}}Grátis!{{/if}}</p>
+<p><strong>Total:</strong> R$ {{total}}</p>
+
+
+<form action="/carrinho/checkout/finalizar" method="POST">
+  <button type="submit">Confirmar Pedido</button>
+</form>

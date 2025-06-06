@@ -1,0 +1,38 @@
+<h2>Simulação de Pagamento</h2>
+
+<p>Total a pagar: R$ {{total}}</p>
+
+<form action="/carrinho/checkout/finalizar" method="POST">
+  Nome no Cartão: <input type="text" name="nomeCartao" required><br><br>
+
+  Número do Cartão: <input type="text" id="numeroCartao" name="numeroCartao" maxlength="19" required><br><br>
+
+  Data de Validade (MM/AA): <input type="text" id="validade" name="validade" maxlength="5" required><br><br>
+
+  CVV: <input type="text" id="cvv" name="cvv" maxlength="3" required><br><br>
+
+  <button type="submit">Pagar e Finalizar</button>
+</form>
+
+<script>
+  // Máscara para número do cartão (formato: 0000 0000 0000 0000)
+  document.getElementById('numeroCartao').addEventListener('input', function (e) {
+    let v = e.target.value.replace(/\D/g, '').slice(0, 16);
+    v = v.replace(/(\d{4})(?=\d)/g, '$1 ');
+    e.target.value = v;
+  });
+
+  // Máscara para validade (formato: MM/AA)
+  document.getElementById('validade').addEventListener('input', function (e) {
+    let v = e.target.value.replace(/\D/g, '').slice(0, 4);
+    if (v.length >= 3) {
+      v = v.replace(/(\d{2})(\d{1,2})/, '$1/$2');
+    }
+    e.target.value = v;
+  });
+
+  // Limitar CVV a 3 dígitos
+  document.getElementById('cvv').addEventListener('input', function (e) {
+    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 3);
+  });
+</script>

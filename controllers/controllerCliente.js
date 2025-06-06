@@ -1,5 +1,6 @@
 const db = require('../config/db_sequelize');
 const path = require('path');
+const bcrypt = require('bcrypt');
 
 module.exports = {
 
@@ -8,26 +9,27 @@ module.exports = {
     // ============================  
 
     async getLoginCliente(req, res) {
-        // Renderiza o login de cliente
         res.render('cliente/login', { layout: 'noMenu.handlebars' });
     },
 
     async postLoginCliente(req, res) {
-        db.Cliente.findAll({ where: { login: req.body.login, senha: req.body.senha } })
-        .then(clientes => {
-            if (clientes.length > 0) {
-                req.session.login = req.body.login;
-                req.session.tipo = clientes[0].dataValues.tipo; 
-                req.session.perfil = 'cliente';  // Perfil do usuário definido como cliente
-                res.locals.login = req.body.login;
+        const cliente = await db.Cliente.findOne({ where: { login: req.body.login } });
 
-                res.render('home');  // Pode mudar para dashboard do cliente, se quiser
-            } else {
-                res.redirect('/cliente/home');
-            }
-        }).catch((err) => {
-            console.log(err);
-        });
+        if (!cliente) {
+            return res.redirect('/cliente/home');
+        }
+
+        const senhaCorreta = await bcrypt.compare(req.body.senha, cliente.senha);
+
+        if (senhaCorreta) {
+            req.session.login = cliente.login;
+            req.session.tipo = cliente.tipo;
+            req.session.perfil = 'cliente';
+            res.locals.login = cliente.login;
+            return res.render('home');
+        } else {
+            return res.redirect('/cliente/home');
+        }
     },
 
     async getLogoutCliente(req, res) {
@@ -40,52 +42,57 @@ module.exports = {
     },
 
     async postCreate(req, res) {
-        db.Cliente.create(req.body)
-        .then(() => {
+        try {
+            const hash = await bcrypt.hash(req.body.senha, 10);
+            req.body.senha = hash;
+
+            await db.Cliente.create(req.body);
             res.redirect('/home');
-        })
-        .catch((err) => {
+        } catch (err) {
             console.log(err);
-        });
+        }
     },
 
     async getList(req, res) {
-        db.Cliente.findAll()
-        .then(clientes => {
-            res.render('cliente/clienteList', { clientes: clientes.map(user => user.toJSON()) });
-        })
-        .catch((err) => {
+        try {
+            const clientes = await db.Cliente.findAll();
+            res.render('cliente/clienteList', {
+                clientes: clientes.map(user => user.toJSON())
+            });
+        } catch (err) {
             console.log(err);
-        });
+        }
     },
 
     async getUpdate(req, res) {
-        await db.Cliente.findByPk(req.params.id)
-        .then(cliente => {
+        try {
+            const cliente = await db.Cliente.findByPk(req.params.id);
             res.render('cliente/clienteUpdate', { cliente: cliente.dataValues });
-        })
-        .catch(err => {
+        } catch (err) {
             console.log(err);
-        });
+        }
     },
 
     async postUpdate(req, res) {
-        await db.Cliente.update(req.body, { where: { id: req.body.id } })
-        .then(() => {
+        try {
+            if (req.body.senha) {
+                const hash = await bcrypt.hash(req.body.senha, 10);
+                req.body.senha = hash;
+            }
+
+            await db.Cliente.update(req.body, { where: { id: req.body.id } });
             res.render('home');
-        })
-        .catch(err => {
+        } catch (err) {
             console.log(err);
-        });
+        }
     },
 
     async getDelete(req, res) {
-        await db.Cliente.destroy({ where: { id: req.params.id } })
-        .then(() => {
+        try {
+            await db.Cliente.destroy({ where: { id: req.params.id } });
             res.render('home');
-        })
-        .catch(err => {
+        } catch (err) {
             console.log(err);
-        });
+        }
     }
-}
+};

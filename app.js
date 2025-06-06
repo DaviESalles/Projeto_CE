@@ -1,21 +1,13 @@
-// Importa o framework Express
 const express = require("express");
 const app = express();
-
-// Importa o módulo express-session
 const session = require("express-session");
-
-// Importa o módulo do Express Handlebars (template engine)
 const handlebars = require("express-handlebars");
 
-// Importa os middlewares
 const middlewares = require("./middlewares/middlewares");
-
-// Importa o arquivo de rotas principal e o carrinho
 const routes = require("./routers/route");
 const carrinhoRoutes = require("./routers/carrinhoRoutes");
 
-// Configura o Handlebars como mecanismo de template da aplicação, com helper 'multiply'
+// Configura o Handlebars com helper customizado
 app.engine("handlebars", handlebars.engine({
   defaultLayout: "main",
   helpers: {
@@ -30,25 +22,31 @@ app.use(
     secret: "textosecreto",
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 30 * 60 * 1000 }
+    cookie: { maxAge: 30 * 60 * 1000 } // 30 minutos
   })
 );
 
-// Middlewares para leitura do corpo das requisições
+// Leitura do corpo das requisições
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Protege rotas específicas
+// Sessão logada (debug - pode remover depois se quiser)
+app.use((req, res, next) => {
+  console.log("Sessão:", req.session);
+  next();
+});
+
+// Protege rotas por tipo de perfil
 app.use('/cliente', middlewares.sessionControlCliente);
 app.use('/vendedor', middlewares.sessionControlVendedor);
 
-// Rotas do carrinho
+// Rotas específicas
 app.use("/carrinho", carrinhoRoutes);
 
-// Demais rotas da aplicação
+// Demais rotas (login, home, crud, etc.)
 app.use(routes);
 
-// Inicia o servidor Express
-app.listen(8081, function () {
+// Inicia o servidor
+app.listen(8081, () => {
   console.log("Servidor no http://localhost:8081");
 });

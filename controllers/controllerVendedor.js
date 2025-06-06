@@ -1,44 +1,39 @@
 const db = require('../config/db_sequelize');
+const path = require('path');
+const bcrypt = require('bcrypt');
 
 module.exports = {
 
-    // ============================
-    // === VALIDAÇÃO DE vendedor ==
-    // ============================
-
-    async getLogin(req, res) {
-        // Renderiza a página de login com layout sem menu
+    // ========== LOGIN VENDEDOR ==========
+    async getLoginVendedor(req, res) {
         res.render('vendedor/login', { layout: 'noMenu.handlebars' });
     },
 
-    async getLogout(req, res) {
-        req.session.destroy();
-        res.redirect('/vendedor/login');
-    },
-
-    async postLogin(req, res) {
+    async postLoginVendedor(req, res) {
         try {
-            const vendedores = await db.Vendedor.findAll({ 
-                where: { login: req.body.login, senha: req.body.senha } 
-            });
+            const vendedor = await db.Vendedor.findOne({ where: { login: req.body.login } });
 
-            if (vendedores.length > 0) {
-                req.session.vendedorLogin = req.body.login;
-                req.session.perfil = 'vendedor';  // Define o perfil como vendedor
-                // Redireciona para a home exclusiva do vendedor, que usa middleware para setar variáveis locais
-                res.redirect('/vendedor/home');
-            } else {
-                res.redirect('/vendedor/login');
-            }
+            if (!vendedor) return res.redirect('/vendedor/login');
+
+            const senhaValida = await bcrypt.compare(req.body.senha, vendedor.senha);
+            if (!senhaValida) return res.redirect('/vendedor/login');
+
+            req.session.vendedorLogin = vendedor.login;
+            req.session.perfil = 'vendedor';
+            res.locals.login = vendedor.login;
+
+            return res.render('home');
+
         } catch (err) {
             console.log(err);
-            res.redirect('/vendedor/login');
+            return res.redirect('/vendedor/login');
         }
     },
 
-    // ============================
-    // === CRUD DE VENDEDORES =====
-    // ============================
+    async getLogoutVendedor(req, res) {
+        req.session.destroy();
+        res.redirect('/');
+    },
 
     async getCreate(req, res) {
         res.render('vendedor/vendedorCreate');
@@ -46,18 +41,22 @@ module.exports = {
 
     async postCreate(req, res) {
         try {
+            const hash = await bcrypt.hash(req.body.senha, 10);
+            req.body.senha = hash;
+
             await db.Vendedor.create(req.body);
             res.redirect('/home');
         } catch (err) {
             console.log(err);
-            res.redirect('/vendedorCreate');
         }
     },
 
     async getList(req, res) {
         try {
             const vendedores = await db.Vendedor.findAll();
-            res.render('vendedor/vendedorList', { vendedores: vendedores.map(user => user.toJSON()) });
+            res.render('vendedor/vendedorList', {
+                vendedores: vendedores.map(v => v.toJSON())
+            });
         } catch (err) {
             console.log(err);
         }
@@ -74,21 +73,24 @@ module.exports = {
 
     async postUpdate(req, res) {
         try {
+            if (req.body.senha) {
+                const hash = await bcrypt.hash(req.body.senha, 10);
+                req.body.senha = hash;
+            }
+
             await db.Vendedor.update(req.body, { where: { id: req.body.id } });
-            res.redirect('/home');
+            res.render('home');
         } catch (err) {
             console.log(err);
-            res.redirect(`/vendedorUpdate/${req.body.id}`);
         }
     },
 
     async getDelete(req, res) {
         try {
             await db.Vendedor.destroy({ where: { id: req.params.id } });
-            res.redirect('/home');
+            res.render('home');
         } catch (err) {
             console.log(err);
-            res.redirect('/home');
         }
     }
 };

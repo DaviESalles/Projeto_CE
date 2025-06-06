@@ -12,9 +12,15 @@
     {{/each}}
   </ul>
 
-  <p><strong>Total:</strong> R$ {{total}}</p>
+<p><strong>Subtotal:</strong> R$ {{subtotal}}</p>
+<p><strong>Frete:</strong> {{#if frete}}R$ {{frete}}{{else}}Grátis!{{/if}}</p>
+<p><strong>Total:</strong> R$ {{total}}</p>
 
-  <a href="/checkout">Finalizar Compra</a>
+
+<form action="/carrinho/checkout" method="POST">
+  <button type="submit">Finalizar Compra</button>
+</form>
+
 {{else}}
   <p>Seu carrinho está vazio.</p>
 {{/if}}
