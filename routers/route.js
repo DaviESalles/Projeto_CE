@@ -111,3 +111,33 @@ route.get("/vendedor/pedidoDelete/:id", middlewares.sessionControlVendedor, cont
 // =============================
 
 module.exports = route;
+
+
+
+// ============================================
+// Sincroniza banco e cria registros iniciais
+// ============================================
+
+// db.sequelize.sync({ force: true }).then(() => {
+//     console.log('{ force: true }');
+// });
+
+    // // Cria um vendedor admin
+    // db.Vendedor.create({
+    //     login: 'adm@adm.com',
+    //     senha: '1234',
+    //     tipo: 1,
+    //     cpf: '000.000.000-01',
+    //     endereco: 'rua admin',
+    //     especialidade: 'Bolo de fubá'
+    // });
+
+    // // Cria um cliente de teste
+    // db.Cliente.create({
+    //     login: 'cli@cli.com',
+    //     senha: '123',
+    //     tipo: 6,
+    //     cpf: '000.000.000-02',
+    //     endereco: 'rua teste',
+    //     produto_preferido: 'Bolo de fubá'
+    // });

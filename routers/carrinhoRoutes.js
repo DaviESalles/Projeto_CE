@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../config/db_sequelize'); // agora importa da fonte certa
+const db = require('../config/db_sequelize');
 const Produto = db.Produto;
 
-// Ver carrinho
 // Ver carrinho
 router.get('/', (req, res) => {
   const carrinho = req.session.carrinho || [];
@@ -20,8 +19,6 @@ router.get('/', (req, res) => {
 
   res.render('carrinho/carrinho', { carrinho, subtotal, frete, total });
 });
-
-
 
 // Adicionar produto ao carrinho
 router.post('/adicionar/:id', async (req, res) => {
@@ -61,8 +58,6 @@ router.post('/remover/:id', (req, res) => {
   res.redirect('/carrinho');
 });
 
-
-// Exibir página de checkout
 // Página de pagamento
 router.post('/checkout', (req, res) => {
   const carrinho = req.session.carrinho || [];
@@ -84,13 +79,45 @@ router.post('/checkout', (req, res) => {
   res.render('checkout/pagamento', { carrinho, subtotal, frete, total });
 });
 
+// Finalizar pedido e salvar no banco
+router.post('/checkout/finalizar', async (req, res) => {
+  const carrinho = req.session.carrinho || [];
+  const clienteId = req.session.clienteId;
 
-// Finalizar pedido fake
-router.post('/checkout/finalizar', (req, res) => {
-  const pedidoId = Math.floor(Math.random() * 1000000); // Gera ID fake
-  req.session.carrinho = []; // Limpa o carrinho
+  // Logs para debug
+  console.log("Cliente ID:", clienteId);
+  console.log("Carrinho:", carrinho);
 
-  res.render('checkout/sucesso', { pedidoId });
+  if (!clienteId || carrinho.length === 0) {
+    return res.redirect('/carrinho');
+  }
+
+  try {
+    for (let item of carrinho) {
+      console.log("Salvando pedido com:", {
+        clienteId: clienteId,
+        produtoId: item.idProduto,
+        quantidade: item.quantidade,
+        valorTotal: item.preco * item.quantidade
+      });
+
+      await db.Pedido.create({
+        clienteId: clienteId,
+        produtoId: item.idProduto,
+        quantidade: item.quantidade,
+        valorTotal: item.preco * item.quantidade
+      });
+    }
+
+    req.session.carrinho = [];
+
+    const pedidoId = Math.floor(Math.random() * 1000000); // Simulado
+    res.render('checkout/sucesso', { pedidoId });
+
+  } catch (err) {
+    console.error("❌ Erro ao salvar pedido:", err);
+    res.status(500).send("Erro ao finalizar o pedido");
+  }
 });
 
 module.exports = router;

@@ -22,6 +22,8 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.DECIMAL(10, 2),
             allowNull: false
         }
+    }, {
+        indexes: [] // Garante que nenhuma indexação única seja criada automaticamente
     });
 
     return Pedido;

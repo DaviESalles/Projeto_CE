@@ -1,33 +1,40 @@
 const db = require('../config/db_sequelize');
-const path = require('path');
 const bcrypt = require('bcrypt');
 
 module.exports = {
-
-    // ============================  
-    // === LOGIN DE CLIENTE =======  
-    // ============================  
-
+    // === LOGIN DE CLIENTE ===
     async getLoginCliente(req, res) {
         res.render('cliente/login', { layout: 'noMenu.handlebars' });
     },
 
     async postLoginCliente(req, res) {
-        const cliente = await db.Cliente.findOne({ where: { login: req.body.login } });
+        try {
+            const cliente = await db.Cliente.findOne({ where: { login: req.body.login } });
 
-        if (!cliente) {
-            return res.redirect('/cliente/home');
-        }
+            if (!cliente) {
+                console.log("Cliente não encontrado");
+                return res.redirect('/cliente/home');
+            }
 
-        const senhaCorreta = await bcrypt.compare(req.body.senha, cliente.senha);
+            const senhaCorreta = await bcrypt.compare(req.body.senha, cliente.senha);
 
-        if (senhaCorreta) {
-            req.session.login = cliente.login;
-            req.session.tipo = cliente.tipo;
-            req.session.perfil = 'cliente';
-            res.locals.login = cliente.login;
-            return res.render('home');
-        } else {
+            if (senhaCorreta) {
+                // Salva dados do cliente na sessão
+                req.session.clienteId = cliente.id;
+                req.session.login = cliente.login;
+                req.session.tipo = cliente.tipo;
+                req.session.perfil = 'cliente';
+                res.locals.login = cliente.login;
+
+                console.log("Login efetuado. Cliente ID:", cliente.id);
+
+                return res.redirect('/home');
+            } else {
+                console.log("Senha incorreta");
+                return res.redirect('/cliente/home');
+            }
+        } catch (err) {
+            console.log("Erro no login do cliente:", err);
             return res.redirect('/cliente/home');
         }
     },
@@ -49,7 +56,7 @@ module.exports = {
             await db.Cliente.create(req.body);
             res.redirect('/home');
         } catch (err) {
-            console.log(err);
+            console.log("Erro ao criar cliente:", err);
         }
     },
 
@@ -60,7 +67,7 @@ module.exports = {
                 clientes: clientes.map(user => user.toJSON())
             });
         } catch (err) {
-            console.log(err);
+            console.log("Erro ao listar clientes:", err);
         }
     },
 
@@ -69,7 +76,7 @@ module.exports = {
             const cliente = await db.Cliente.findByPk(req.params.id);
             res.render('cliente/clienteUpdate', { cliente: cliente.dataValues });
         } catch (err) {
-            console.log(err);
+            console.log("Erro ao carregar cliente:", err);
         }
     },
 
@@ -83,7 +90,7 @@ module.exports = {
             await db.Cliente.update(req.body, { where: { id: req.body.id } });
             res.render('home');
         } catch (err) {
-            console.log(err);
+            console.log("Erro ao atualizar cliente:", err);
         }
     },
 
@@ -92,7 +99,7 @@ module.exports = {
             await db.Cliente.destroy({ where: { id: req.params.id } });
             res.render('home');
         } catch (err) {
-            console.log(err);
+            console.log("Erro ao excluir cliente:", err);
         }
     }
 };
